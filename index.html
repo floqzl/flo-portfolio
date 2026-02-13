@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>flo — Portfolio</title>
+  <meta name="description" content="flo's portfolio — videos + Discord." />
+
+  <style>
+    :root{
+      /* ===== CLEAN BLACK THEME ===== */
+      --bg:#050507;
+      --bg2:#07070A;
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --faint: rgba(255,255,255,.55);
+      --border: rgba(255,255,255,.16);
+      --border2: rgba(255,255,255,.10);
+      --shadow: 0 24px 70px rgba(0,0,0,.62);
+
+      --radius: 18px;
+      --radius2: 26px;
+      --maxw: 1150px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 15% 10%, rgba(255,255,255,.05), transparent 55%),
+        radial-gradient(900px 600px at 90% 20%, rgba(255,255,255,.04), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    /* light, cheap background motion */
+    .noise{
+      position:fixed; inset:0;
+      background-image:
+        radial-gradient(circle at 10% 10%, rgba(255,255,255,.05) 0 1px, transparent 1px),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.04) 0 1px, transparent 1px),
+        radial-gradient(circle at 40% 80%, rgba(255,255,255,.04) 0 1px, transparent 1px);
+      background-size: 180px 180px, 220px 220px, 260px 260px;
+      opacity:.35;
+      pointer-events:none;
+      z-index:-1;
+      animation: drift 14s ease-in-out infinite alternate;
+    }
+    @keyframes drift{
+      from{ transform: translate3d(0,0,0); }
+      to{ transform: translate3d(-18px, 12px, 0); }
+    }
+
+    .wrap{max-width:var(--maxw); margin:0 auto; padding:28px 18px 80px;}
+
+    /* ===== NAV ===== */
+    .nav{
+      position:sticky; top:14px; z-index:40;
+      display:flex; align-items:center; justify-content:space-between;
+      background: rgba(10,10,12,.62);
+      border:1px solid var(--border);
+      backdrop-filter: blur(12px);
+      border-radius: 999px;
+      padding:10px 12px;
+      box-shadow: 0 16px 55px rgba(0,0,0,.35);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:999px;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 0 16px rgba(255,255,255,.18);
+    }
+    .brand strong{font-weight:900; letter-spacing:.2px}
+    .brand span{color:var(--muted); font-size:13px}
+    .links{display:flex; align-items:center; gap:6px; flex-wrap:wrap; justify-content:flex-end}
+    .chip{
+      border:1px solid var(--border2);
+      background: rgba(255,255,255,.03);
+      padding:8px 10px;
+      border-radius:999px;
+      text-decoration:none;
+      color:var(--text);
+      font-size:13px;
+      transition:.2s ease;
+      cursor:pointer;
+      user-select:none;
+    }
+    .chip:hover{transform: translateY(-1px); background: rgba(255,255,255,.05)}
+    .chip.primary{
+      border-color: rgba(255,255,255,.22);
+      background: rgba(255,255,255,.05);
+    }
+
+    /* ===== HERO ===== */
+    .hero{padding:64px 0 16px; display:grid; grid-template-columns: 1.15fr .85fr; gap:14px; align-items:stretch}
+    @media (max-width: 920px){ .hero{grid-template-columns:1fr; padding-top:44px} }
+
+    .panel{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+
+      transform: translateY(8px);
+      opacity:0;
+      animation: popIn .6s ease forwards;
+    }
+    .panel.delay{ animation-delay:.10s; }
+    @keyframes popIn{ to{ transform: translateY(0); opacity:1; } }
+
+    /* subtle sheen only */
+    .panel::after{
+      content:"";
+      position:absolute; inset:-80px;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,.06), transparent);
+      transform: translateX(-45%) rotate(8deg);
+      animation: sweep 7.5s ease-in-out infinite;
+      pointer-events:none;
+      opacity:.22;
+    }
+    @keyframes sweep{
+      0%{ transform: translateX(-45%) rotate(8deg); }
+      50%{ transform: translateX(45%) rotate(8deg); }
+      100%{ transform: translateX(-45%) rotate(8deg); }
+    }
+
+    .heroMain{padding:22px 22px 18px; position:relative}
+    .kicker{
+      display:inline-flex; align-items:center; gap:10px;
+      border:1px solid var(--border2);
+      background: rgba(255,255,255,.03);
+      padding:8px 12px;
+      border-radius:999px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .kicker .pill{
+      font-weight:900;
+      color:rgba(255,255,255,.92);
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      padding:4px 8px; border-radius:999px;
+    }
+
+    h1{
+      margin:14px 0 10px;
+      font-size: 42px;
+      line-height:1.06;
+      letter-spacing:-.8px;
+    }
+    @media (max-width:520px){ h1{font-size:34px} }
+
+    .sub{
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.6;
+      max-width: 62ch;
+      margin:0 0 16px;
+    }
+
+    .ctaRow{display:flex; gap:10px; flex-wrap:wrap}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding:11px 14px;
+      border-radius: 14px;
+      border:1px solid var(--border2);
+      background: rgba(255,255,255,.03);
+      text-decoration:none;
+      color:var(--text);
+      font-weight:900;
+      transition:.2s ease;
+      cursor:pointer;
+    }
+    .btn:hover{transform: translateY(-1px); background: rgba(255,255,255,.05)}
+    .btn.primary{
+      border-color: rgba(255,255,255,.22);
+      background: rgba(255,255,255,.05);
+      box-shadow: 0 18px 50px rgba(255,255,255,.06);
+    }
+
+    .metaRow{
+      margin-top:16px;
+      display:flex; gap:10px; flex-wrap:wrap;
+      color:var(--faint); font-size:13px;
+    }
+    .metaTag{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--border2);
+      background: rgba(255,255,255,.02);
+      padding:8px 10px;
+      border-radius:999px;
+    }
+    .metaTag b{color:rgba(255,255,255,.9)}
+    .copyBtn{
+      border:none;
+      background: transparent;
+      color: rgba(255,255,255,.92);
+      font-weight:900;
+      cursor:pointer;
+      padding:0;
+      text-decoration: underline;
+      text-decoration-color: rgba(255,255,255,.25);
+    }
+    .copyBtn:hover{ text-decoration-color: rgba(255,255,255,.55); }
+
+    .heroSide{
+      padding:14px;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .card{
+      border:1px solid var(--border2);
+      background: rgba(0,0,0,.20);
+      border-radius: var(--radius);
+      padding:14px;
+
+      transform: translateY(10px);
+      opacity:0;
+    }
+    .card.reveal{ animation: reveal .5s ease forwards; }
+    @keyframes reveal{ to{ transform: translateY(0); opacity:1; } }
+    .card h3{margin:0 0 8px; font-size:14px; color:rgba(255,255,255,.88)}
+    .card p{margin:0; color:var(--muted); font-size:13px; line-height:1.55}
+
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    @media (max-width:920px){ .grid2{grid-template-columns:1fr} }
+
+    /* ===== SECTIONS ===== */
+    .section{margin-top:16px}
+    .sectionHeader{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      margin:16px 0 10px;
+    }
+    .sectionHeader h2{margin:0; font-size:18px; letter-spacing:-.2px}
+    .sectionHeader span{color:var(--muted); font-size:13px}
+
+    .tiles{display:grid; grid-template-columns: repeat(12, 1fr); gap:12px}
+
+    .tile{
+      grid-column: span 6;
+      border:1px solid var(--border2);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border-radius: var(--radius);
+      padding:14px;
+      transition:.2s ease;
+      position:relative;
+      overflow:hidden;
+
+      transform: translateY(10px);
+      opacity:0;
+    }
+    .tile.reveal{ animation: reveal .5s ease forwards; }
+    .tile:hover{
+      transform: translateY(-2px) !important;
+      background: rgba(255,255,255,.05);
+    }
+    .tile.small{grid-column: span 4}
+    .tile.full{grid-column: span 12}
+    @media (max-width: 920px){
+      .tile, .tile.small{grid-column: span 12}
+    }
+
+    .tileTitle{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .tileTitle h3{margin:0; font-size:15px}
+    .badge{
+      font-size:12px;
+      color: rgba(255,255,255,.86);
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.05);
+      padding:6px 10px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+    .tile p{margin:10px 0 0; color:var(--muted); font-size:13px; line-height:1.6}
+    .tile a{
+      color: rgba(255,255,255,.92);
+      text-decoration:none;
+      font-weight:900;
+    }
+    .tile a:hover{text-decoration:underline}
+
+    /* ===== SMALL VIDEO CARDS ===== */
+    .videoGrid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:12px;
+    }
+    .videoCard{
+      grid-column: span 4;
+      border:1px solid var(--border2);
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border-radius: var(--radius);
+      padding:12px;
+
+      transform: translateY(10px);
+      opacity:0;
+      transition:.2s ease;
+      overflow:hidden;
+    }
+    .videoCard.reveal{ animation: reveal .5s ease forwards; }
+    .videoCard:hover{ transform: translateY(-2px) !important; background: rgba(255,255,255,.05); }
+    @media (max-width: 1100px){ .videoCard{grid-column: span 6;} }
+    @media (max-width: 700px){ .videoCard{grid-column: span 12;} }
+
+    .thumb{
+      border-radius: 14px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.20);
+      aspect-ratio: 16 / 9;
+      position:relative;
+      display:block;
+    }
+    .thumb img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+      filter: grayscale(10%) contrast(1.05);
+      transition: .25s ease;
+    }
+    .videoCard:hover .thumb img{ transform: scale(1.02); }
+    .play{
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(circle at center, rgba(0,0,0,.35), rgba(0,0,0,.55));
+      opacity:0;
+      transition:.2s ease;
+    }
+    .videoCard:hover .play{ opacity:1; }
+    .playIcon{
+      width:54px; height:54px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.35);
+      background: rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:center;
+      backdrop-filter: blur(10px);
+    }
+    .playIcon svg{ width:18px; height:18px; fill: rgba(255,255,255,.9); margin-left:2px; }
+    .vTitle{margin:10px 0 6px; font-weight:900; font-size:14px; }
+    .vDesc{margin:0; color:var(--muted); font-size:13px; line-height:1.45}
+    .vLink{margin:10px 0 0; display:flex; justify-content:space-between; align-items:center; gap:10px}
+    .vLink a{font-weight:900; text-decoration:none; color:rgba(255,255,255,.92)}
+    .vLink a:hover{text-decoration:underline}
+
+    /* ===== Added section: How to work with me ===== */
+    .steps{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:12px;
+    }
+    .step{
+      grid-column: span 4;
+      border:1px solid var(--border2);
+      background: rgba(255,255,255,.02);
+      border-radius: var(--radius);
+      padding:14px;
+
+      transform: translateY(10px);
+      opacity:0;
+    }
+    .step.reveal{ animation: reveal .5s ease forwards; }
+    @media (max-width: 900px){ .step{grid-column: span 12;} }
+    .stepNum{
+      width:30px; height:30px; border-radius:10px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.04);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:900; font-size:13px;
+      margin-bottom:10px;
+    }
+    .step h3{margin:0 0 8px; font-size:14px}
+    .step p{margin:0; color:var(--muted); font-size:13px; line-height:1.55}
+
+    /* ===== NEW: Payment methods section ===== */
+    .payGrid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:12px;
+    }
+    .pay{
+      grid-column: span 3;
+      border:1px solid var(--border2);
+      background: rgba(255,255,255,.02);
+      border-radius: var(--radius);
+      padding:14px;
+
+      transform: translateY(10px);
+      opacity:0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .pay.reveal{ animation: reveal .5s ease forwards; }
+    @media (max-width: 950px){ .pay{grid-column: span 6;} }
+    @media (max-width: 540px){ .pay{grid-column: span 12;} }
+
+    .payLeft{display:flex; align-items:center; gap:12px}
+    .icon{
+      width:40px; height:40px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.04);
+      display:flex; align-items:center; justify-content:center;
+      font-size:18px;
+    }
+    .payTitle{margin:0; font-weight:900; font-size:14px}
+    .payHint{margin:2px 0 0; color:var(--muted); font-size:12px}
+
+    .footer{
+      margin-top:24px;
+      padding:16px 14px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.02);
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-size: 13px;
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    }
+
+    /* ===== Toast ===== */
+    #toast{
+      position:fixed;
+      bottom:18px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:120;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(10,10,12,.72);
+      backdrop-filter: blur(12px);
+      color: rgba(255,255,255,.9);
+      font-size:13px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      display:none;
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important; transition:none !important}
+      .noise{display:none}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="noise"></div>
+
+  <div class="wrap">
+    <!-- ===== NAV ===== -->
+    <div class="nav">
+  <div class="brand">
+    <div class="dot live"></div>
+
+    <div class="brandText">
+      <strong id="brandName">flo</strong>
+      <span id="brandTag">@floqzl</span>
+    </div>
+
+    <!-- added: filled header content -->
+    <div class="brandExtras">
+      <span class="miniPill" id="topTitle">Welcome to flo's portfolio</span>
+
+      <span class="statusPill" id="commissionPill">
+        <span class="pulse"></span>
+        Now accepting commissions
+      </span>
+
+      <span class="miniStat">
+        <span class="miniIcon">▶</span>
+        <span><b id="videoCount">0</b> videos</span>
+      </span>
+
+      <span class="miniStat">
+        <span class="miniIcon">✦</span>
+        <span>Discord-based</span>
+      </span>
+
+      <span class="miniStat">
+        <span class="miniIcon">⚡</span>
+        <span>Fast replies</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="links">
+    <a class="chip" href="#videos">Videos</a>
+    <a class="chip" href="#how">How it works</a>
+    <a class="chip" href="#payments">Payments</a>
+    <a class="chip" href="#discord">Discord</a>
+    <a class="chip primary" id="openYouTube" target="_blank" rel="noreferrer">YouTube</a>
+  </div>
+
+  <div class="navOrnament" aria-hidden="true"></div>
+</div>
+
+
+    <!-- ===== HERO ===== -->
+    <div class="hero">
+      <div class="panel">
+        <div class="heroMain">
+          <div class="kicker">
+            <span class="pill" id="kickerPill">Roblox Scripter</span>
+            <span id="kickerText">Video-first • Discord-based</span>
+          </div>
+
+          <h1 id="headline">Hey, I’m flo.</h1>
+          <p class="sub" id="subhead">
+            I’m back to scripting after a break — motivated and improving as I go. I’m honest about scope:
+            tell me what you want and I’ll tell you what’s realistic.
+          </p>
+
+          <div class="ctaRow">
+            <a class="btn primary" id="ctaDiscordServer" target="_blank" rel="noreferrer">Join my Discord</a>
+            <button class="btn" id="ctaCopyDiscord">Copy my Discord</button>
+            <a class="btn" id="ctaYouTube" target="_blank" rel="noreferrer">Watch my Videos</a>
+          </div>
+
+          <div class="metaRow">
+            <div class="metaTag"><b>Discord:</b> <span id="discordUser">floqzl</span> (<button class="copyBtn" id="copyDiscordInline">copy</button>)</div>
+            <div class="metaTag"><b>Main hub:</b> Discord server portfolio</div>
+            <div class="metaTag"><b>Content:</b> Showcases + proof of work</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel delay">
+        <div class="heroSide">
+          <div class="card">
+            <h3>What this page is for</h3>
+            <p>Quick access to my best showcases and my Discord — so you can contact me in seconds.</p>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <h3>Fast communication</h3>
+              <p>Clear updates and quick replies when working.</p>
+            </div>
+            <div class="card">
+              <h3>Honest scope</h3>
+              <p>If it’s too complex, I’ll say it early and offer alternatives.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Want something made?</h3>
+            <p>Join the Discord server and open a ticket / DM with references.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== VIDEOS (from your links) ===== -->
+    <div class="section" id="videos">
+      <div class="sectionHeader">
+        <h2>Featured Videos</h2>
+        <span>Click a card to open on YouTube</span>
+      </div>
+      <div class="videoGrid" id="videoCards"></div>
+    </div>
+
+    <!-- ===== How it works ===== -->
+    <div class="section" id="how">
+      <div class="sectionHeader">
+        <h2>How to work with me</h2>
+        <span>Simple process = more trust</span>
+      </div>
+      <div class="steps" id="steps"></div>
+    </div>
+
+    <!-- ===== NEW: Payments ===== -->
+    <div class="section" id="payments">
+      <div class="sectionHeader">
+        <h2>Payment Methods</h2>
+        <span>Choose what works for you</span>
+      </div>
+      <div class="payGrid" id="payGrid"></div>
+    </div>
+
+    <!-- ===== DISCORD ===== -->
+    <div class="section" id="discord">
+      <div class="sectionHeader">
+        <h2>Discord</h2>
+        <span>Main hub for portfolio + commissions</span>
+      </div>
+      <div class="tiles" id="discordTiles"></div>
+    </div>
+
+    <div class="footer">
+      <div>© <span id="year"></span> <span id="footerName">flo</span> — my Roblox Scripting portfolio.</div>
+      <div>Message @floqzl <b>on Discord</b> for further details.</div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // =========================
+    // EDIT THIS CONFIG ONLY
+    // =========================
+    const siteConfig = {
+      name: "flo",
+      discordUsername: "floqzl",
+      discordServerInvite: "https://discord.gg/4zqv7WcS",
+      youtubeChannel: "https://www.youtube.com/@HieflixRBLX",
+
+      rolePill: "Roblox Scripter",
+      kicker: "Video-first • Discord-based",
+      headline: "Hey, I’m flo.",
+      subhead:
+        "I’m back to scripting after a break — motivated and improving as I go. I’m honest about scope: " +
+        "tell me what you want and I’ll tell you what’s realistic.",
+
+      // YOUR VIDEO LINKS (already filled)
+      featuredVideos: [
+        {
+          title: "Game menu screen",
+          desc: "UI / Menu showcase.",
+          youtubeId: "XZleOFgYL4Q"
+        },
+        {
+          title: "Admin panel → Discord webhook",
+          desc: "Admin panel connected to a Discord webhook.",
+          youtubeId: "fEwQ_DTLpto"
+        },
+        {
+          title: "Removal transformation (Kengan Ashura)",
+          desc: "Transformation showcase inspired by Kengan Ashura.",
+          youtubeId: "kpv9UY7jzgQ"
+        },
+        {
+          title: "Broly transformation",
+          desc: "Transformation showcase.",
+          youtubeId: "vGt7_nfr6KQ"
+        },
+        {
+          title: "Gojo Domain Expansion (WIP)",
+          desc: "Not finished yet (WIP) — still a preview.",
+          youtubeId: "f60lBijCVdg"
+        }
+      ],
+
+      howSteps: [
+        { title: "Send your idea", desc: "DM me or join the server. Include references, what you want, and how it should feel." },
+        { title: "I confirm scope", desc: "I’ll tell you what’s realistic and suggest a simpler version if needed." },
+        { title: "Build & update", desc: "I send progress updates and we iterate until it’s clean and done." }
+      ],
+
+      paymentMethods: [
+        { name: "Robux", icon: "R$", hint: "Roblox payment" },
+        { name: "PayPal", icon: "💳", hint: "Fast & common" },
+        { name: "Nitro", icon: "🎁", hint: "Discord gift" },
+        { name: "Crypto", icon: "₿", hint: "BTC / USDT etc." }
+      ],
+
+      discordTiles: [
+        {
+          title: "Discord Server Portfolio",
+          badge: "Main hub",
+          desc: "Join the server to see my portfolio, updates, and request commissions.",
+          linkText: "Join server",
+          url: "https://discord.gg/4zqv7WcS",
+          size: "full"
+        },
+        {
+          title: "My Discord Username",
+          badge: "@",
+          desc: "Message me directly with your idea.",
+          linkText: "Copy username",
+          url: "copy:discord",
+          size: "small"
+        },
+        {
+          title: "YouTube Channel",
+          badge: "Showcase",
+          desc: "More videos + proof of work.",
+          linkText: "Open YouTube",
+          url: "https://www.youtube.com/@HieflixRBLX",
+          size: "small"
+        }
+      ]
+    };
+
+    // =========================
+    // Helpers
+    // =========================
+    const el = (id) => document.getElementById(id);
+
+    function toast(msg){
+      const t = el("toast");
+      t.textContent = msg;
+      t.style.display = "block";
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(()=> t.style.display="none", 1500);
+    }
+
+    function makeDiscordTile(item){
+      const div = document.createElement("div");
+      div.className = `tile ${item.size || ""}`.trim();
+
+      const head = document.createElement("div");
+      head.className = "tileTitle";
+
+      const h3 = document.createElement("h3");
+      h3.textContent = item.title;
+
+      const badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = item.badge || "";
+
+      head.appendChild(h3);
+      if(item.badge) head.appendChild(badge);
+
+      const p = document.createElement("p");
+      p.textContent = item.desc || "";
+      div.appendChild(head);
+      div.appendChild(p);
+
+      if (item.linkText && item.url){
+        const link = document.createElement("p");
+        link.style.marginTop = "10px";
+        const a = document.createElement("a");
+        a.textContent = item.linkText;
+        a.href = item.url.startsWith("copy:") ? "#" : item.url;
+        a.target = item.url.startsWith("http") ? "_blank" : "_self";
+        a.rel = "noreferrer";
+        a.addEventListener("click", (e)=>{
+          if(item.url === "copy:discord"){
+            e.preventDefault();
+            navigator.clipboard.writeText(siteConfig.discordUsername);
+            toast(`Copied: ${siteConfig.discordUsername}`);
+          }
+        });
+        link.appendChild(a);
+        div.appendChild(link);
+      }
+      return div;
+    }
+
+    function makeVideoCard(v){
+      const card = document.createElement("div");
+      card.className = "videoCard";
+
+      const a = document.createElement("a");
+      a.className = "thumb";
+      a.href = `https://www.youtube.com/watch?v=${encodeURIComponent(v.youtubeId)}`;
+      a.target = "_blank";
+      a.rel = "noreferrer";
+      a.innerHTML = `
+        <img loading="lazy" src="https://i.ytimg.com/vi/${encodeURIComponent(v.youtubeId)}/hqdefault.jpg" alt="">
+        <div class="play">
+          <div class="playIcon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+          </div>
+        </div>
+      `;
+
+      const title = document.createElement("div");
+      title.className = "vTitle";
+      title.textContent = v.title;
+
+      const desc = document.createElement("p");
+      desc.className = "vDesc";
+      desc.textContent = v.desc || "";
+
+      const linkRow = document.createElement("div");
+      linkRow.className = "vLink";
+      linkRow.innerHTML = `<a target="_blank" rel="noreferrer" href="https://www.youtube.com/watch?v=${encodeURIComponent(v.youtubeId)}">Open</a>
+                           <span class="badge">YouTube</span>`;
+
+      card.appendChild(a);
+      card.appendChild(title);
+      card.appendChild(desc);
+      card.appendChild(linkRow);
+
+      return card;
+    }
+
+    function makeStep(i, s){
+      const div = document.createElement("div");
+      div.className = "step";
+      div.innerHTML = `
+        <div class="stepNum">${i+1}</div>
+        <h3>${s.title}</h3>
+        <p>${s.desc}</p>
+      `;
+      return div;
+    }
+
+    function makePay(p){
+      const div = document.createElement("div");
+      div.className = "pay";
+      div.innerHTML = `
+        <div class="payLeft">
+          <div class="icon">${p.icon}</div>
+          <div>
+            <div class="payTitle">${p.name}</div>
+            <div class="payHint">${p.hint || ""}</div>
+          </div>
+        </div>
+        <span class="badge">Accepted</span>
+      `;
+      return div;
+    }
+
+    // =========================
+    // Reveal (lightweight)
+    // =========================
+    function revealOnScroll(selector){
+      const targets = document.querySelectorAll(selector);
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach((e)=>{
+          if(e.isIntersecting){
+            e.target.classList.add("reveal");
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      targets.forEach((t, i)=>{
+        t.style.animationDelay = `${Math.min(i*0.05, 0.25)}s`;
+        io.observe(t);
+      });
+    }
+
+    // =========================
+    // Init
+    // =========================
+    function init(){
+      document.title = `${siteConfig.name} — Portfolio`;
+
+      el("brandName").textContent = siteConfig.name;
+      el("footerName").textContent = siteConfig.name;
+      el("brandTag").textContent = `@${siteConfig.discordUsername}`;
+      el("discordUser").textContent = siteConfig.discordUsername;
+
+      el("kickerPill").textContent = siteConfig.rolePill;
+      el("kickerText").textContent = siteConfig.kicker;
+      el("headline").textContent = siteConfig.headline;
+      el("subhead").textContent = siteConfig.subhead;
+
+      el("ctaDiscordServer").href = siteConfig.discordServerInvite;
+      el("ctaYouTube").href = siteConfig.youtubeChannel;
+      el("openYouTube").href = siteConfig.youtubeChannel;
+
+      el("year").textContent = new Date().getFullYear();
+
+      // videos
+      const vwrap = el("videoCards");
+      vwrap.innerHTML = "";
+      siteConfig.featuredVideos.forEach(v => vwrap.appendChild(makeVideoCard(v)));
+
+      // steps
+      const swrap = el("steps");
+      swrap.innerHTML = "";
+      siteConfig.howSteps.forEach((s, i) => swrap.appendChild(makeStep(i, s)));
+
+      // payments
+      const pwrap = el("payGrid");
+      pwrap.innerHTML = "";
+      siteConfig.paymentMethods.forEach(p => pwrap.appendChild(makePay(p)));
+
+      // discord
+      const dwrap = el("discordTiles");
+      dwrap.innerHTML = "";
+      siteConfig.discordTiles.forEach(d => dwrap.appendChild(makeDiscordTile(d)));
+
+      // copy actions
+      const copy = async () => {
+        await navigator.clipboard.writeText(siteConfig.discordUsername);
+        toast(`Copied: ${siteConfig.discordUsername}`);
+      };
+      el("ctaCopyDiscord").addEventListener("click", copy);
+      el("copyDiscordInline").addEventListener("click", (e)=>{ e.preventDefault(); copy(); });
+
+      // reveals
+      const cards = document.querySelectorAll(".heroSide .card");
+      cards.forEach((c, i) => setTimeout(()=> c.classList.add("reveal"), 140 + i*90));
+      revealOnScroll(".videoCard");
+      revealOnScroll(".step");
+      revealOnScroll(".pay");
+      revealOnScroll(".tile");
+    }
+
+    init();
+  </script>
+</body>
+</html>
